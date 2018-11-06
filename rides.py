@@ -10,7 +10,7 @@ class Ride:
         self.latest_finish = latest_finish
         self.distance = abs(x_start - x_end) + abs(y_start - y_end)
         self.distance_from_grid_start = x_start + y_start
-        if self.distance_from_grid_start>self.earliest_start:
+        if self.distance_from_grid_start > self.earliest_start:
             self.earliest_start = self.distance_from_grid_start
 
     def __str__(self):
@@ -22,6 +22,5 @@ class Ride:
         return self.earliest_start < other.earliest_start or self.earliest_start == other.earliest_start\
                and self.latest_finish < other.latest_finish
 
-    def get_end_intersection(self):
-        return self.x_end, self.y_end
-
+    def distance_from_vehicle(self, vehicle):
+        return abs(self.x_start - vehicle.x) + abs(self.y_start - vehicle.y)
