@@ -14,7 +14,7 @@ class Vehicle:
         return abs(self.x - ride.x_start) + abs(self.y - ride.y_start)
 
     def assign_ride(self, ride):
-        self.time = self.time + self.distance_from_ride(ride)
+        self.time = self.time + self.distance_from_ride(ride) + ride.earliest_start
         self.assigned_rides.append(ride.i)
         self.x, self.y = ride.x_end, ride.y_end
         self.time = self.time + ride.distance

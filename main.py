@@ -43,7 +43,7 @@ def get_unassigned_rides(list_of_rides):
 
 
 def first_sorting(list_of_rides):
-    list_of_rides.sort(key=operator.attrgetter('earliest_start', 'distance_from_grid_start', 'distance'))
+    list_of_rides.sort(key=operator.attrgetter('real_earliest_start', 'distance_from_grid_start', 'distance'))
     return list_of_rides
 
 

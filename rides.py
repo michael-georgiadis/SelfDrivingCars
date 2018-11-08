@@ -11,8 +11,9 @@ class Ride:
         self.over = False
         self.distance = abs(x_start - x_end) + abs(y_start - y_end)
         self.distance_from_grid_start = x_start + y_start
-        if self.distance_from_grid_start > self.earliest_start:
-            self.earliest_start = self.distance_from_grid_start
+        self.real_earliest_start = earliest_start
+        if self.distance_from_grid_start > self.real_earliest_start:
+            self.real_earliest_start = self.distance_from_grid_start
 
     def __str__(self):
         return "Ride[index={i}, StartInt=[{x_start},{y_start}], DestinationInt=[{x_end},{y_end}], " \
