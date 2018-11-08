@@ -8,6 +8,7 @@ class Ride:
         self.y_end = y_end
         self.earliest_start = earliest_start
         self.latest_finish = latest_finish
+        self.over = False
         self.distance = abs(x_start - x_end) + abs(y_start - y_end)
         self.distance_from_grid_start = x_start + y_start
         if self.distance_from_grid_start > self.earliest_start:
