@@ -1,4 +1,12 @@
 /// <reference path="../node_modules/@types/d3/index.d.ts"/>
 import { IGrid, IPoint, ITimeSpan, IRide } from "./sdc-types"
+import { Board } from "./visual"
 
-console.log("hello world!");
+const board = new Board({
+    columns: 10, rows: 10,
+    current_step: 0, total_steps: 10,
+    bonus: 2
+}, 35, 5);
+
+board.drawBoard("#grid");
+
