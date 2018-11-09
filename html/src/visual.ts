@@ -122,6 +122,30 @@ export class Board {
         this.gridElement = gridContainer;
     }
 
+    public getPath(a: IIntersection, b: IIntersection) {
+        const stepX = Math.sign(a.col - b.col);
+        const stepY = Math.sign(a.row - b.row);
+        const startingPoint = this.intersectionCoordinates[a.row][a.col];
+        const path = [`M${startingPoint.x} ${startingPoint.y}`];
+
+        let current = a;
+        let updateRow = true;
+        while (current.col != b.col || current.row != b.row) {
+            const next: IIntersection = {
+                row: current.row !== b.row && updateRow ? current.row + stepX : current.row,
+                col: current.col !== b.col && !updateRow ? current.col + stepY : current.col
+            }
+            const nextPoint = this.intersectionCoordinates[next.row][next.col];
+            path.push(`L${nextPoint.x} ${nextPoint.y}`);
+            updateRow = !updateRow;
+            current = next;
+        }
+
+        console.log(path);
+
+        return path.join(" ");
+    }
+
     //public refreshRides() { };
     public refreshCars(cars: IVehicle[]) {
         this.gridElement
@@ -131,13 +155,25 @@ export class Board {
             .append("circle")
             .attr("class", "vehicle")
             .attr("cx", v =>
-                this.intersectionCoordinates[v.position.row][v.position.col].toString())
+                this.intersectionCoordinates[v.position.row][v.position.col].x.toString())
+            .attr("cy", v =>
+                this.intersectionCoordinates[v.position.row][v.position.col].y.toString())
             .attr("r", 5)
             .style("stroke", "#222")
             .style("fill", v => {
                 if (v.ride == null) return "green";
                 else return "blue";
-            })
-            .append("path");
+            });
+
+        this.gridElement
+            .selectAll(".vehicle-path")
+            .data(cars)
+            .enter()
+            .append("path")
+            .attr("d", d => this.getPath(d.position, d.destination))
+            .style("fill", "transparent")
+            .style("stroke", "#f00")
+            .style("stroke-width", 4);
+
     };
 }

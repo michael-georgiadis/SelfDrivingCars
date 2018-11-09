@@ -10,3 +10,8 @@ const board = new Board({
 
 board.drawBoard("#grid");
 
+board.refreshCars([{
+    destination: { col: 5, row: 5 },
+    position: { col: 1, row: 8 },
+    bonus: 0
+}]);
