@@ -18,5 +18,11 @@ export interface IGridData {
     intersection: IIntersection,
     point: IPoint,
     index: number,
-    text?:string;
+    text?: string;
+}
+export interface IVehicle {
+    position: IIntersection,
+    destination: IIntersection,
+    ride?: IRide,
+    bonus: number;
 }

@@ -1,14 +1,11 @@
-/// <reference path="../node_modules/@types/d3/index.d.ts"/>
-import { IGrid, IPoint, ITimeSpan, IRide, IIntersection, IGridData } from "./sdc-types";
+import { IGrid, IPoint, ITimeSpan, IRide, IIntersection, IGridData, IVehicle } from "./sdc-types";
 import * as d3 from "d3";
-import { thresholdSturges } from "d3";
-
 
 export class Board {
     options: IGrid;
     edgeLength: number;
     padding: number;
-    gridElement: any;
+    gridElement: d3.Selection<d3.BaseType, {}, HTMLElement, any> = <any>{};
     data: IGridData[];
     intersectionCoordinates: IPoint[][];
 
@@ -88,7 +85,7 @@ export class Board {
 
         gridContainer
             .selectAll(".column-label")
-            .data(this.data.filter((value, index) => value.intersection.row === 0))
+            .data(this.data.filter((value, index) => value.intersection.row === 0))// || value.intersection.row === rows_))
             .enter()
             .append("text")
             .attr("class", "column-label")
@@ -100,7 +97,7 @@ export class Board {
 
         gridContainer
             .selectAll(".row-label")
-            .data(this.data.filter((value, index) => value.intersection.col === 0))
+            .data(this.data.filter((value, index) => value.intersection.col === 0))// || value.intersection.col === columns_))
             .enter()
             .append("text")
             .attr("class", "row-label")
@@ -125,6 +122,22 @@ export class Board {
         this.gridElement = gridContainer;
     }
 
-    public refreshRides() { };
-    public refreshCars() { };
+    //public refreshRides() { };
+    public refreshCars(cars: IVehicle[]) {
+        this.gridElement
+            .selectAll(".vehicle")
+            .data(cars)
+            .enter()
+            .append("circle")
+            .attr("class", "vehicle")
+            .attr("cx", v =>
+                this.intersectionCoordinates[v.position.row][v.position.col].toString())
+            .attr("r", 5)
+            .style("stroke", "#222")
+            .style("fill", v => {
+                if (v.ride == null) return "green";
+                else return "blue";
+            })
+            .append("path");
+    };
 }
