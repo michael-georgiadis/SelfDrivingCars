@@ -14,7 +14,11 @@ const config = {
         loader: 'ts-loader',
         exclude: /node_modules/
       }
-    ]
+    ],
+
+  },
+  externals: {
+    d3: 'd3'
   },
   resolve: {
     extensions: [
