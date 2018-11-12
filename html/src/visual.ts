@@ -154,6 +154,11 @@ export class Board {
         }
     }
 
+    // public d3Line(a: IIntersection, b: IIntersection) {
+    //     const data = [...this.inclusivePointPath(a, b)].map(point => [point.x, point.y]);
+    //     return d3.line()(data)
+    // }
+
     public getPath(a: IIntersection, b: IIntersection) {
 
         //var line = d3.line().curve(d3.curveMonotoneX);
