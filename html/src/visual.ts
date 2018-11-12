@@ -71,8 +71,8 @@ export class Board {
 
             this.intersectionCoordinates[value.intersection.row][value.intersection.col] =
                 {
-                    x: value.point.x + paddedLength + padding / 2,
-                    y: value.point.y + paddedLength + padding / 2
+                    x: value.point.x + paddedLength,
+                    y: value.point.y + paddedLength
                 };
 
             return value;
