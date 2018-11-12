@@ -1,14 +1,19 @@
-
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Self driving cars frontend</title>
-    </head>
-    <body>
-        <h1>Self driving cars frontend</h1>
-        <button id="btnUpdate">update path</button>
-        <div id="grid"></div>
-        <script src="https://d3js.org/d3.v5.min.js"></script>
-        <script src="bundle.js"></script>
-    </body>
+
+<head>
+    <title>Self driving cars frontend</title>
+</head>
+
+<body>
+    <h1>Self driving cars frontend</h1>
+    <div style="display: flex; justify-items: center">
+        <button id="btnUpdate">One more step</button>
+        <div style="padding: 5px; text-align: center">Current step: <span id="StepCounter">0</span></div>
+    </div>
+    <div id="grid"></div>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="bundle.js"></script>
+</body>
+
 </html>

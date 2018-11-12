@@ -18,19 +18,27 @@ board.addCars([{
     destination: { col: 5, row: 5 },
     position: { col: 1, row: 1 },
     bonus: 0
+}, {
+    destination: { col: 6, row: 6 },
+    position: { col: 10, row: 1 },
+    bonus: 0
 }]);
+
+const rideGen = board.generateRides(25);
+const rides = Array.from({ length: 10 }, (_, i) => rideGen.next().value);
+board.addRides(rides)
+
 
 function btnUpdate_Click(e: MouseEvent) {
     const cars = board.cars;
 
     for (let car of cars) {
-        car.position.row++;
-        car.position.col++;
+        car.position = board.moveOneStepToDestination(car.position, car.destination);
+        if (!!car.ride) car.ride.position = car.position;
     }
-
-    console.log(cars);
-
     board.updateCars(cars)
+    board.updateRides(board.currentStep++, board.rides);
+    document.getElementById("StepCounter")!.innerText = board.currentStep.toString();
 }
 
 document.getElementById("btnUpdate")!.addEventListener("click", btnUpdate_Click)
