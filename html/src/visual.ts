@@ -1,6 +1,10 @@
 import { IGrid, IPoint, ITimeSpan, IRide, IIntersection, IGridData, IVehicle } from "./sdc-types";
 import * as d3 from "d3";
 
+interface Iterator<IIntersection> {
+    [Symbol.iterator](): IterableIterator<IIntersection>;
+}
+
 export class Board {
     options: IGrid;
     edgeLength: number;
@@ -8,7 +12,7 @@ export class Board {
     gridElement: d3.Selection<d3.BaseType, {}, HTMLElement, any> = <any>{};
     data: IGridData[];
     intersectionCoordinates: IPoint[][];
-
+    cars: IVehicle[];
     constructor(grid: IGrid, edgeLength: number, padding: number) {
         this.options = grid;
         this.edgeLength = edgeLength;
@@ -16,6 +20,7 @@ export class Board {
         this.intersectionCoordinates = Array.from({ length: grid.rows + 1 },
             (_, rowIndex) => Array.from({ length: grid.columns + 1 },
                 (_, columnIndex) => <IPoint>{ x: columnIndex, y: rowIndex + 1 }));
+        this.cars = [];
         this.data = this.refreshData(grid);
     }
 
@@ -122,9 +127,41 @@ export class Board {
         this.gridElement = gridContainer;
     }
 
+    public *inclusiveIntersectionPath(a: IIntersection, b: IIntersection): Iterator<IIntersection> {
+        const stepX = Math.sign(b.col - a.col);
+        const stepY = Math.sign(b.row - a.row);
+
+        yield a; //this.intersectionCoordinates[a.row][a.col];
+
+        let current = a;
+        let updateRow = true;
+        while (current.col != b.col || current.row != b.row) {
+            const next: IIntersection = {
+                row: current.row !== b.row && updateRow ? current.row + stepY : current.row,
+                col: current.col !== b.col && !updateRow ? current.col + stepX : current.col
+            }
+            yield next;//this.intersectionCoordinates[next.row][next.col];
+
+            updateRow = !updateRow;
+            current = next;
+        }
+    }
+
+    public *inclusivePointPath(a: IIntersection, b: IIntersection): Iterator<IPoint> {
+        const iter = this.inclusiveIntersectionPath(a, b);
+        for (let xion of iter) {
+            yield this.intersectionCoordinates[xion.row][xion.col];
+        }
+    }
+
     public getPath(a: IIntersection, b: IIntersection) {
-        const stepX = Math.sign(a.col - b.col);
-        const stepY = Math.sign(a.row - b.row);
+
+        //var line = d3.line().curve(d3.curveMonotoneX);
+        //.x(function(d, i) { return xScale(i); }) // set the x values for the line generator
+        //.y(function(d) { return yScale(d.y); }) // set the y values for the line generator 
+        console.log(a, "->", b);
+        const stepX = Math.sign(b.col - a.col);
+        const stepY = Math.sign(b.row - a.row);
         const startingPoint = this.intersectionCoordinates[a.row][a.col];
         const path = [`M${startingPoint.x} ${startingPoint.y}`];
 
@@ -132,8 +169,8 @@ export class Board {
         let updateRow = true;
         while (current.col != b.col || current.row != b.row) {
             const next: IIntersection = {
-                row: current.row !== b.row && updateRow ? current.row + stepX : current.row,
-                col: current.col !== b.col && !updateRow ? current.col + stepY : current.col
+                row: current.row !== b.row && updateRow ? current.row + stepY : current.row,
+                col: current.col !== b.col && !updateRow ? current.col + stepX : current.col
             }
             const nextPoint = this.intersectionCoordinates[next.row][next.col];
             path.push(`L${nextPoint.x} ${nextPoint.y}`);
@@ -147,7 +184,7 @@ export class Board {
     }
 
     //public refreshRides() { };
-    public refreshCars(cars: IVehicle[]) {
+    public addCars(cars: IVehicle[]) {
         this.gridElement
             .selectAll(".vehicle")
             .data(cars)
@@ -175,5 +212,23 @@ export class Board {
             .style("stroke", "#f00")
             .style("stroke-width", 4);
 
+        this.cars = cars;
     };
+
+    public updateCars(cars: IVehicle[]) {
+        this.gridElement
+            .selectAll(".vehicle")
+            .data(cars)
+            .transition()
+            .attr("cx", v =>
+                this.intersectionCoordinates[v.position.row][v.position.col].x.toString())
+            .attr("cy", v =>
+                this.intersectionCoordinates[v.position.row][v.position.col].y.toString());
+
+        this.gridElement
+            .selectAll(".vehicle-path")
+            .data(cars)
+            .transition()
+            .attr("d", d => this.getPath(d.position, d.destination));
+    }
 }

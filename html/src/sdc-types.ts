@@ -7,6 +7,8 @@ export interface IGrid {
 }
 export interface IPoint { x: number, y: number }
 export interface IIntersection { row: number, col: number }
+
+
 export interface ITimeSpan { start: number, stop: number }
 export interface IRide {
     index: number,

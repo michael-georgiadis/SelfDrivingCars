@@ -10,8 +10,27 @@ const board = new Board({
 
 board.drawBoard("#grid");
 
-board.refreshCars([{
+board.addCars([{
     destination: { col: 5, row: 5 },
     position: { col: 1, row: 8 },
     bonus: 0
+}, {
+    destination: { col: 5, row: 5 },
+    position: { col: 1, row: 1 },
+    bonus: 0
 }]);
+
+function btnUpdate_Click(e: MouseEvent) {
+    const cars = board.cars;
+
+    for (let car of cars) {
+        car.position.row++;
+        car.position.col++;
+    }
+
+    console.log(cars);
+
+    board.updateCars(cars)
+}
+
+document.getElementById("btnUpdate")!.addEventListener("click", btnUpdate_Click)
